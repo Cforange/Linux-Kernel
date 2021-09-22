@@ -36,4 +36,21 @@ enum {
 };
 #define TCA_VLAN_MAX (__TCA_VLAN_MAX - 1)
 
+// belong to tc_add_field.h
+#define TCA_ACT_ADD_FIELD 18 // 数字应设置为多少？
+
+struct tc_add_field {
+    tc_gen;
+};
+
+enum {
+    TCA_ADD_FIELD_UNSPEC,
+    TCA_ADD_FIELD_PARMS,
+    TCA_ADD_FIELD_OFFSET,
+    TCA_ADD_FIELD_LEN,
+    TCA_ADD_FIELD_VALUE,
+    __TCA_ADD_FIELD_MAX,
+};
+#define TCA_ADD_FIELD_MAX (__TCA_ADD_FIELD_MAX - 1)
+
 #endif

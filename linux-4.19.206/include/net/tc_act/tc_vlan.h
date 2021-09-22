@@ -13,6 +13,21 @@
 #include <net/act_api.h>
 #include <linux/tc_act/tc_vlan.h>
 
+// belong to tc_add_field.h
+struct tcf_add_field_params {
+    u16 tcfa_offset;
+    u16 tcfa_len;
+    u8 tcfa_value[16];
+    struct rcu_head rcu;
+};
+
+struct tcf_add_field {
+    struct tc_action common;
+    struct tcf_add_field_params __rcu *add_field_p;
+};
+
+#define to_add_field(a) ((struct tcf_add_field *)a)
+
 struct tcf_vlan_params {
 	int               tcfv_action;
 	u16               tcfv_push_vid;

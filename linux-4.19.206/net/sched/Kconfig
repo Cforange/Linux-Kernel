@@ -842,6 +842,17 @@ config NET_ACT_VLAN
 	  To compile this code as a module, choose M here: the
 	  module will be called act_vlan.
 
+config NET_ACT_ADD_FIELD
+        tristate "Add field manipulation"
+        depends on NET_CLS_ACT
+        ---help---
+	  Say Y here to add field headers.
+
+	  If unsure, say N.
+
+	  To compile this code as a module, choose M here: the
+	  module will be called act_add_field.
+
 config NET_ACT_BPF
         tristate "BPF based action"
         depends on NET_CLS_ACT
