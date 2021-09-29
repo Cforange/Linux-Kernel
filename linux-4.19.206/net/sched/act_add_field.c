@@ -86,6 +86,11 @@ static int tcf_add_field_init(struct net *net, struct nlattr *nla,
     p->tcfa_offset = nla_get_u16(tb[TCA_ADD_FIELD_OFFSET]);
     p->tcfa_len = nla_get_u16(tb[TCA_ADD_FIELD_LEN]);
     strcpy(p->tcfa_value, nla_data(tb[TCA_ADD_FIELD_VALUE])); // 将字符串指针赋值给数组
+	printk(KERN_ALERT "Do the act_add_field_init!");
+	printk(KERN_ALERT "tcfa_offset : %d", p->tcfa_offset);
+	printk(KERN_DEBUG "tcfa_len : %d", p->tcfa_len);
+	printk(KERN_DEBUG "tcfa_value[0] : %d, tcfa_value[1] : %d,", p->tcfa_value[0], p->tcfa_value[1]);
+	printk(KERN_DEBUG "tcfa_value[2] : %d, tcfa_value[3] : %d\n", p->tcfa_value[2], p->tcfa_value[3]);
          
     spin_lock_bh(&m->tcf_lock); //  m->common.tcfa_lock
 	rcu_swap_protected(m->add_field_p, p, lockdep_is_held(&m->tcf_lock));
@@ -101,7 +106,12 @@ static int tcf_add_field_init(struct net *net, struct nlattr *nla,
 
 static void tcf_add_field_cleanup(struct tc_action *a)
 {
+	struct tcf_add_field *v = to_add_field(a);
+	struct tcf_add_field_params *p;
 
+	p = rcu_dereference_protected(v->add_field_p, 1);
+	if (p)
+		kfree_rcu(p, rcu);
 }
 
 static int tcf_add_field_dump(struct sk_buff *skb, struct tc_action *a,
@@ -115,7 +125,9 @@ static int tcf_add_field_walker(struct net *net, struct sk_buff *skb,
                                 const struct tc_action_ops *ops,
                                 struct netlink_ext_ack *extack)
 {
-    return 0;
+    struct tc_action_net *tn = net_generic(net, add_field_net_id);
+
+	return tcf_generic_walker(tn, skb, cb, type, ops, extack);
 }
 
 static int tcf_add_field_search(struct net *net, struct tc_action **a, u32 index,
